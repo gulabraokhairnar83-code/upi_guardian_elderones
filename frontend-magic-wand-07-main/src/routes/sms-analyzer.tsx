@@ -1,0 +1,2 @@
+import { createFileRoute } from "@tanstack/react-router"; import { SmsAnalyzerPage } from "@/components/pages";
+export const Route=createFileRoute("/sms-analyzer")({head:()=>({meta:[{title:"SMS Scam Detector — UPI Guardian"},{name:"description",content:"Check suspicious SMS text before responding."},{property:"og:title",content:"SMS Scam Detector — UPI Guardian"},{property:"og:description",content:"Check suspicious SMS text before responding."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:SmsAnalyzerPage});

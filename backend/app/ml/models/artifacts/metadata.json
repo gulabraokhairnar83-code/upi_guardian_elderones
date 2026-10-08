@@ -1,0 +1,32 @@
+{
+  "model_name": "IsolationForest",
+  "model_version": "1.0.0",
+  "n_estimators": 150,
+  "contamination": 0.08,
+  "random_state": 42,
+  "features": [
+    "amount",
+    "z_score_deviation",
+    "velocity",
+    "is_new_payee",
+    "unusual_time"
+  ],
+  "saved_at": "2026-10-08T12:08:19.175161+00:00",
+  "model_type": "IsolationForest",
+  "version": "1.0.0",
+  "trained_at": "2026-10-08T12:08:19.122651+00:00",
+  "n_samples": 1200,
+  "n_features": 5,
+  "feature_names": [
+    "amount",
+    "z_score_deviation",
+    "velocity",
+    "is_new_payee",
+    "unusual_time"
+  ],
+  "anomalies_detected_in_train": 96,
+  "anomaly_rate": 0.08,
+  "decision_min": -0.1907,
+  "decision_max": 0.2427,
+  "decision_mean": 0.1548
+}

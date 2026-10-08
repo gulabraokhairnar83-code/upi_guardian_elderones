@@ -1,0 +1,2 @@
+import { createFileRoute } from "@tanstack/react-router"; import { TechnologyPage } from "@/components/pages";
+export const Route=createFileRoute("/technology")({head:()=>({meta:[{title:"Technology — UPI Guardian"},{name:"description",content:"Explore the planned technology behind UPI Guardian."},{property:"og:title",content:"Technology — UPI Guardian"},{property:"og:description",content:"Explore the planned technology behind UPI Guardian."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:TechnologyPage});

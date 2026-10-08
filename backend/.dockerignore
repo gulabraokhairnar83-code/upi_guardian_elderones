@@ -1,0 +1,21 @@
+# UPI Guardian - Backend .dockerignore
+.git
+.github
+.pytest_cache
+.coverage
+htmlcov
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+venv
+env
+ENV
+.env*
+!.env.example
+!.env.production.example
+tests
+app/ml/data/*.csv
+.DS_Store
+Thumbs.db
+*.log

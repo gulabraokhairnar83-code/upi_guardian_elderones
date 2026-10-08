@@ -1,0 +1,2 @@
+import { createFileRoute } from "@tanstack/react-router"; import { ReportsPage } from "@/components/pages";
+export const Route=createFileRoute("/reports")({head:()=>({meta:[{title:"Safety Reports — UPI Guardian"},{name:"description",content:"Explore synthetic fraud risk and transaction trends."},{property:"og:title",content:"Safety Reports — UPI Guardian"},{property:"og:description",content:"Explore synthetic fraud risk and transaction trends."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:ReportsPage});
