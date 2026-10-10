@@ -1,5 +1,5 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { Activity, Bell, Brain, ChartNoAxesCombined, ChevronDown, CreditCard, FileText, Menu, MessageSquare, Moon, Phone, Settings, ShieldAlert, ShieldCheck, Sun, UserRound, Users, X } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Activity, Bell, Brain, ChartNoAxesCombined, ChevronDown, CreditCard, FileText, LogOut, Menu, MessageSquare, Moon, Phone, Settings, ShieldAlert, ShieldCheck, Sun, UserRound, Users, X } from "lucide-react";
 import { useState, useEffect, type ReactNode } from "react";
 import { useApp } from "@/lib/app-context";
 import { useHealthCheck, useAuth, useNotifications } from "@/hooks";
@@ -17,9 +17,16 @@ export function AppShell({ title, subtitle, children }: { title: string; subtitl
   const [profile, setProfile] = useState(false);
   const { dark, senior, toggleDark, toggleSenior } = useApp();
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
   const { data: health } = useHealthCheck();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, loading } = useAuth();
   const { data: notifData = [] } = useNotifications(10);
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate({ to: "/login" });
+    }
+  }, [loading, isAuthenticated, navigate]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -92,15 +99,44 @@ export function AppShell({ title, subtitle, children }: { title: string; subtitl
             className="flex items-center gap-2.5 text-sm text-sidebar-muted hover:text-sidebar-foreground"
           >
             <UserRound size={17} />
-            <span className="truncate max-w-[120px]">{userName}</span>
+            <span className="truncate max-w-[100px]">{userName}</span>
           </Link>
-          <span className="rounded bg-primary/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-primary">
-            {userRole}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="rounded bg-primary/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-primary">
+              {userRole}
+            </span>
+            <button
+              onClick={async () => {
+                await logout();
+                navigate({ to: "/login" });
+              }}
+              title="Sign Out"
+              aria-label="Sign Out"
+              className="rounded p-1 text-sidebar-muted hover:text-danger hover:bg-sidebar-accent transition"
+            >
+              <LogOut size={15} />
+            </button>
+          </div>
         </div>
       </div>
     </>
   );
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent shadow-md" />
+          <p className="font-display text-base font-bold text-foreground">Verifying security session...</p>
+          <p className="text-xs text-muted-foreground">UPI Guardian protection engine</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -256,12 +292,14 @@ export function AppShell({ title, subtitle, children }: { title: string; subtitl
                   </Link>
                   {isAuthenticated ? (
                     <button
-                      onClick={() => {
-                        logout();
+                      onClick={async () => {
                         setProfile(false);
+                        await logout();
+                        navigate({ to: "/login" });
                       }}
-                      className="w-full text-left rounded-md px-3 py-2 text-sm text-danger hover:bg-muted"
+                      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-danger hover:bg-danger-soft transition"
                     >
+                      <LogOut size={16} />
                       Sign Out
                     </button>
                   ) : (

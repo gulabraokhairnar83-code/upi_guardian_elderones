@@ -11,26 +11,108 @@ PRIMARY_USER_ID = "usr_sunita_68"
 
 def seed_initial_data(db):
     """Seed the 7 collections with realistic synthetic records if empty."""
+    from app.utils.auth import hash_password
+
+    default_pw_hash = hash_password("GuardianPass123!")
 
     # 1. USERS COLLECTION
     if db.users.count_documents({}) == 0:
-        db.users.insert_one(
-            {
-                "_id": PRIMARY_USER_ID,
-                "user_id": PRIMARY_USER_ID,
-                "name": "Sunita Devi",
-                "age": 68,
-                "location": "Pune, Maharashtra",
-                "phone": "+91 ••••• ••410",
-                "email": "sunita.demo@example.com",
-                "role": "elder",
-                "accountSafetyStatus": "Protected",
-                "twoFactorEnabled": True,
-                "loginAlertsEnabled": True,
-                "is_synthetic": True,
-                "created_at": datetime.now(timezone.utc).isoformat(),
-            }
+        db.users.insert_many(
+            [
+                {
+                    "_id": PRIMARY_USER_ID,
+                    "user_id": PRIMARY_USER_ID,
+                    "name": "Sunita Devi",
+                    "age": 68,
+                    "location": "Pune, Maharashtra",
+                    "phone": "+91 98765 43210",
+                    "email": "sunita.demo@example.com",
+                    "password_hash": default_pw_hash,
+                    "role": "ELDER",
+                    "accountSafetyStatus": "Protected",
+                    "twoFactorEnabled": True,
+                    "loginAlertsEnabled": True,
+                    "is_synthetic": True,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                },
+                {
+                    "_id": "usr_sunita_alias",
+                    "user_id": "usr_sunita_alias",
+                    "name": "Sunita Devi",
+                    "age": 68,
+                    "location": "Pune, Maharashtra",
+                    "phone": "+91 98765 43210",
+                    "email": "sunita.devi@example.com",
+                    "password_hash": default_pw_hash,
+                    "role": "ELDER",
+                    "accountSafetyStatus": "Protected",
+                    "twoFactorEnabled": True,
+                    "loginAlertsEnabled": True,
+                    "is_synthetic": True,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                },
+                {
+                    "_id": "usr_rohit_01",
+                    "user_id": "usr_rohit_01",
+                    "name": "Rohit Caregiver",
+                    "age": 38,
+                    "location": "Pune, Maharashtra",
+                    "phone": "+91 98201 12345",
+                    "email": "rohit.caregiver@example.com",
+                    "password_hash": default_pw_hash,
+                    "role": "CAREGIVER",
+                    "accountSafetyStatus": "Protected",
+                    "twoFactorEnabled": True,
+                    "loginAlertsEnabled": True,
+                    "is_synthetic": True,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                },
+            ]
         )
+    else:
+        # Ensure demo users have valid password hashes in case collections existed
+        db.users.update_one(
+            {"$or": [{"email": "sunita.demo@example.com"}, {"_id": PRIMARY_USER_ID}]},
+            {"$set": {"password_hash": default_pw_hash, "role": "ELDER"}},
+        )
+        if not db.users.find_one({"email": "sunita.devi@example.com"}):
+            db.users.insert_one(
+                {
+                    "_id": "usr_sunita_alias",
+                    "user_id": "usr_sunita_alias",
+                    "name": "Sunita Devi",
+                    "age": 68,
+                    "location": "Pune, Maharashtra",
+                    "phone": "+91 98765 43210",
+                    "email": "sunita.devi@example.com",
+                    "password_hash": default_pw_hash,
+                    "role": "ELDER",
+                    "accountSafetyStatus": "Protected",
+                    "twoFactorEnabled": True,
+                    "loginAlertsEnabled": True,
+                    "is_synthetic": True,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                }
+            )
+        if not db.users.find_one({"email": "rohit.caregiver@example.com"}):
+            db.users.insert_one(
+                {
+                    "_id": "usr_rohit_01",
+                    "user_id": "usr_rohit_01",
+                    "name": "Rohit Caregiver",
+                    "age": 38,
+                    "location": "Pune, Maharashtra",
+                    "phone": "+91 98201 12345",
+                    "email": "rohit.caregiver@example.com",
+                    "password_hash": default_pw_hash,
+                    "role": "CAREGIVER",
+                    "accountSafetyStatus": "Protected",
+                    "twoFactorEnabled": True,
+                    "loginAlertsEnabled": True,
+                    "is_synthetic": True,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                }
+            )
 
     # 2. CAREGIVERS COLLECTION
     if db.caregivers.count_documents({}) == 0:

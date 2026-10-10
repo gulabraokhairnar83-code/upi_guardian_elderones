@@ -15,6 +15,7 @@ import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as CallAnalyzerRouteImport } from './routes/call-analyzer'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as FamilyRouteImport } from './routes/family'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReportsRouteImport } from './routes/reports'
@@ -52,6 +53,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const FamilyRoute = FamilyRouteImport.update({
   id: '/family',
   path: '/family',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/call-analyzer': typeof CallAnalyzerRoute
   '/dashboard': typeof DashboardRoute
   '/family': typeof FamilyRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/reports': typeof ReportsRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/call-analyzer': typeof CallAnalyzerRoute
   '/dashboard': typeof DashboardRoute
   '/family': typeof FamilyRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/reports': typeof ReportsRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/call-analyzer': typeof CallAnalyzerRoute
   '/dashboard': typeof DashboardRoute
   '/family': typeof FamilyRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/reports': typeof ReportsRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/call-analyzer'
     | '/dashboard'
     | '/family'
+    | '/forgot-password'
     | '/login'
     | '/register'
     | '/reports'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/call-analyzer'
     | '/dashboard'
     | '/family'
+    | '/forgot-password'
     | '/login'
     | '/register'
     | '/reports'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/call-analyzer'
     | '/dashboard'
     | '/family'
+    | '/forgot-password'
     | '/login'
     | '/register'
     | '/reports'
@@ -202,6 +214,7 @@ export interface RootRouteChildren {
   CallAnalyzerRoute: typeof CallAnalyzerRoute
   DashboardRoute: typeof DashboardRoute
   FamilyRoute: typeof FamilyRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ReportsRoute: typeof ReportsRoute
@@ -254,6 +267,13 @@ declare module '@tanstack/react-router' {
       path: '/family'
       fullPath: '/family'
       preLoaderRoute: typeof FamilyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -322,6 +342,7 @@ const rootRouteChildren: RootRouteChildren = {
   CallAnalyzerRoute: CallAnalyzerRoute,
   DashboardRoute: DashboardRoute,
   FamilyRoute: FamilyRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ReportsRoute: ReportsRoute,

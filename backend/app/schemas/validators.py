@@ -213,6 +213,27 @@ def validate_login(data: dict | None) -> dict:
     }
 
 
+def validate_forgot_password(data: dict | None) -> dict:
+    """Validate POST /api/auth/forgot-password payload."""
+    if not isinstance(data, dict):
+        raise ValidationError("Request body must be a valid JSON object.")
+
+    email = data.get("email")
+    if not email or not isinstance(email, str) or not email.strip():
+        raise ValidationError("Field 'email' is required.")
+
+    clean_email = email.strip().lower()
+    if len(clean_email) > 254:
+        raise ValidationError("Field 'email' must not exceed 254 characters.")
+    email_regex = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+    if not re.match(email_regex, clean_email):
+        raise ValidationError("Field 'email' must be a valid email address.")
+
+    return {
+        "email": clean_email,
+    }
+
+
 def validate_caregiver_create(data: dict | None) -> dict:
     """Validate POST /api/caregivers payload."""
     if not isinstance(data, dict):

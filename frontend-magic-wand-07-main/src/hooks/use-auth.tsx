@@ -19,6 +19,7 @@ interface AuthContextType {
     role?: "ELDER" | "CAREGIVER";
   }) => Promise<UserSession>;
   logout: () => Promise<void>;
+  forgotPassword: (email: string) => Promise<{ success: boolean; message: string }>;
   clearError: () => void;
 }
 
@@ -41,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       .catch(() => {
         if (mounted) {
+          setUser(null);
           setLoading(false);
         }
       });
@@ -87,6 +89,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const forgotPassword = async (email: string) => {
+    setError(null);
+    try {
+      return await authService.forgotPassword(email);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to send reset instructions.";
+      setError(msg);
+      throw err;
+    }
+  };
+
   const logout = async () => {
     await authService.logout();
     setUser(null);
@@ -103,6 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         login,
         register,
+        forgotPassword,
         logout,
         clearError,
       }}

@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request, g
 from app.services.auth_service import AuthService
-from app.schemas.validators import validate_register, validate_login
+from app.schemas.validators import validate_register, validate_login, validate_forgot_password
 from app.utils.auth import jwt_required
 from app.utils.rate_limiter import rate_limit
 from app.utils.responses import json_response
@@ -33,6 +33,19 @@ def login():
     data = request.get_json(silent=True)
     validated = validate_login(data)
     result = AuthService.login(validated)
+    return json_response(result, status_code=200)
+
+
+@auth_bp.route("/auth/forgot-password", methods=["POST"])
+@rate_limit(limit=10, per_seconds=60, key_prefix="auth_forgot_password")
+def forgot_password():
+    """Request password reset instructions.
+
+    POST /api/auth/forgot-password
+    """
+    data = request.get_json(silent=True)
+    validated = validate_forgot_password(data)
+    result = AuthService.forgot_password(validated)
     return json_response(result, status_code=200)
 
 

@@ -238,11 +238,42 @@ npm run dev
   - `FLASK_ENV`: `development` or `production`
   - `SECRET_KEY`: High-entropy session key
   - `JWT_SECRET_KEY`: High-entropy JWT signing key
+  - `JWT_ACCESS_TOKEN_EXPIRES`: Access token lifespan in seconds (default `3600`)
   - `MONGODB_URI`: MongoDB Atlas connection URI (leave blank for local `mongomock`)
+  - `USE_MOCK_DB`: Set `true` to use in-memory `mongomock` without MongoDB installation
   - `TWILIO_ENABLED`: Set `false` for offline mock mode; `true` for live telecom dispatch
 - **Frontend (`frontend-magic-wand-07-main/.env`)**:
   - `VITE_API_BASE_URL`: URL to backend Flask service (`http://127.0.0.1:5000/api`)
-  - `VITE_USE_MOCK_API`: Set `false` for live backend; `true` for standalone offline demo
+  - `VITE_USE_MOCK_API`: Set `false` for live backend with JWT authentication; `true` for standalone offline demo
+
+---
+
+## 18. Authentication & Access Control
+
+UPI Guardian features a complete end-to-end authentication system:
+
+### Key Capabilities
+- **Protected Dashboard Routes**: Dashboard pages (`/dashboard`, `/transactions`, `/alerts`, `/call-analyzer`, `/sms-analyzer`, `/risk-analysis`, `/family`, `/reports`, `/settings`) enforce authentication guards. Unauthenticated visitors are automatically redirected to `/login`.
+- **Role-Based Profiles**: Dedicated roles for **Elderly User** (`ELDER`) and **Trusted Caregiver** (`CAREGIVER`).
+- **Secure Password Hashing**: Utilizes salted `scrypt` hashing via Werkzeug security primitives. Plain-text passwords are never stored.
+- **JWT Authorization**: All secured API requests pass signed `Bearer <token>` headers validated by Flask decorators (`@jwt_required()`).
+- **Token Blacklisting**: Logout immediately revokes tokens with automatic MongoDB TTL cleanup.
+- **Forgot Password Workflow**: Secure password recovery route (`/forgot-password`) dispatching verification alerts to user & caregiver.
+
+### Authentication Endpoints
+- `POST /api/auth/register` — Register a new Elder or Caregiver account
+- `POST /api/auth/login` — Sign in and receive access/refresh tokens
+- `POST /api/auth/logout` — Revoke active session token
+- `POST /api/auth/refresh` — Refresh access token
+- `GET /api/auth/me` — Retrieve current authenticated user profile
+- `POST /api/auth/forgot-password` — Request password reset & emergency caregiver alert
+
+### Pre-configured Development Accounts
+| Role | Email | Password |
+|---|---|---|
+| Elderly User | `sunita.demo@example.com` | `GuardianPass123!` |
+| Elderly User (Alias) | `sunita.devi@example.com` | `GuardianPass123!` |
+| Trusted Caregiver | `rohit.caregiver@example.com` | `GuardianPass123!` |
 
 ---
 

@@ -88,14 +88,13 @@ export const authService = {
     };
   },
 
-  async getCurrentUser(): Promise<UserSession> {
-    if (isMockEnabled()) {
-      return mockSession;
-    }
-
+  async getCurrentUser(): Promise<UserSession | null> {
     const token = getAuthToken();
     if (!token) {
-      // Fallback for seamless demo if not logged in
+      return null;
+    }
+
+    if (isMockEnabled()) {
       return mockSession;
     }
 
@@ -108,8 +107,20 @@ export const authService = {
         avatar: user.name ? user.name.slice(0, 2).toUpperCase() : "UG",
       };
     } catch {
-      return mockSession;
+      clearAuthToken();
+      return null;
     }
+  },
+
+  async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
+    if (isMockEnabled()) {
+      return {
+        success: true,
+        message: "Password reset instructions and verification codes have been dispatched to your registered contact.",
+      };
+    }
+
+    return apiClient.post<{ success: boolean; message: string }>("/auth/forgot-password", { email });
   },
 
   async logout(): Promise<void> {

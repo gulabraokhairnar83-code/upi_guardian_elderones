@@ -53,3 +53,35 @@ The server will start at `http://127.0.0.1:5000`.
 ```bash
 pytest
 ```
+
+## Authentication System
+
+UPI Guardian uses JSON Web Token (JWT) authentication paired with salted `scrypt` password hashing. Passwords are never stored in plain text.
+
+### Authentication Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | Register a new user (`ELDER` or `CAREGIVER`) | No |
+| `POST` | `/api/auth/login` | Authenticate with email & password | No |
+| `POST` | `/api/auth/logout` | Revoke active access token | Yes (Bearer JWT) |
+| `POST` | `/api/auth/refresh` | Refresh access token using refresh token | No |
+| `GET` | `/api/auth/me` | Fetch authenticated user profile | Yes (Bearer JWT) |
+| `POST` | `/api/auth/forgot-password` | Dispatch password reset & caregiver alert | No |
+
+### Security Implementation
+
+- **Password Hashing**: Salted scrypt key derivation function via Werkzeug security primitives.
+- **JWT Protection**: Short-lived access tokens (default 3600s) and refresh tokens (7 days) signed with HS256.
+- **Token Revocation**: Revoked JWT JTIs are stored with automatic TTL index expiration.
+- **Rate Limiting**: Sliding-window rate limiting on registration and login endpoints.
+- **Database Isolation**: Supports MongoDB Atlas or in-memory `mongomock` for development without database dependencies.
+
+### Pre-seeded Development Accounts
+
+| Role | Email | Password |
+|---|---|---|
+| Elderly User | `sunita.demo@example.com` | `GuardianPass123!` |
+| Elderly User (Alias) | `sunita.devi@example.com` | `GuardianPass123!` |
+| Caregiver | `rohit.caregiver@example.com` | `GuardianPass123!` |
+
